@@ -9,7 +9,7 @@ public class PlayerContoller : MonoBehaviour
     [SerializeField] private float jumpSpeed;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private SurfaceEffector2D surfaceEffector;
-
+    public StateMachine stateMachine;
     private Animator animator;
     private Rigidbody2D rigid;
     private SpriteRenderer spriteRenderer;
@@ -45,8 +45,12 @@ public class PlayerContoller : MonoBehaviour
         PlayerMove();
         if (isJumped && isGrounded)
             PlayerJump();
+      
     }
+    private void TakeDamage()
+    {
 
+    }
     private void PlayerInput()
     {
         //float x = Input.GetAxis("Horizontal");
@@ -78,20 +82,18 @@ public class PlayerContoller : MonoBehaviour
         if (inputX < 0)
         {
             spriteRenderer.flipX = true;
-            cinemachine.m_TrackedObjectOffset = new Vector3(-10, 0, 0);
+            cinemachine.m_TrackedObjectOffset = new Vector3(-10, 2, 0);
         }
         else
         {
             spriteRenderer.flipX = false;
-            cinemachine.m_TrackedObjectOffset = new Vector3(10, 0, 0);
-
+            cinemachine.m_TrackedObjectOffset = new Vector3(10, 2, 0);
         }
         //spriteRenderer.flipX = inputX < 0;
     }
 
     private void PlayerJump()
     {
-        Debug.Log("점프!");
         rigid.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
         //animator.speed = 0.1f;
         animator.Play(JUMP_HASH);
@@ -101,6 +103,8 @@ public class PlayerContoller : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log($"{collision.gameObject.name} : tag = {collision.gameObject.tag}, layer = {collision.gameObject.layer}");
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             Debug.Log("2D 충돌");
@@ -109,7 +113,7 @@ public class PlayerContoller : MonoBehaviour
         if (collision.gameObject.CompareTag("Surface"))
         {
             Debug.Log("Surface");
-            surfaceEffector = collision.gameObject.GetComponent<SurfaceEffector2D>();
+            //surfaceEffector = collision.gameObject.GetComponent<SurfaceEffector2D>();
         }
     }
 
